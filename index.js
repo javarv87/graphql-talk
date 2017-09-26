@@ -1,26 +1,59 @@
 'use strict';
-const { graphql, buildSchema } = require('graphql');
-const graphqlHTTP =  require('express-graphql');
 const express = require('express');
+const graphqlHTTP =  require('express-graphql');
+const {
+    GraphQLSchema,
+    GraphQLObjectType,
+    GraphQLID,
+    GraphQLString,
+    GraphQLInt,
+    GraphQLBoolean
+} = require('graphql');
 
 const PORT = process.env.PORT || 3000;
 const server = express();
-
-const schema = buildSchema(`
-type Video {
-    id: ID,
-    title: String,
-    duration: Int,
-    watched: Boolean
-}
-type Query {
-    video: Video
-    videos: [Video]
-}
-type Schema {
-    query: Query
-}
-`);
+const videoType = new GraphQLObjectType({
+    name: 'Video',
+    decription: 'This is new Video',
+    fields: {
+        id: {
+            type: GraphQLID,
+            description: 'Id of video'
+        },
+        title: {
+            type: GraphQLString,
+            description: 'Title of the video'
+        },
+        duration: {
+            type: GraphQLInt,
+            decription: 'Duration of the video'
+        },
+        watched: {
+            type: GraphQLBoolean,
+            decription: 'If video was viewed'
+        }
+    }
+});
+const queryType =  new GraphQLObjectType({
+    name: 'QueryType',
+    description: 'The root query type',
+    fields: {
+        video: {
+            type: videoType,
+            resolve: () => new Promise((resolve) => {
+                resolve({
+                    id: 1,
+                    title: 'Learning Angular',
+                    duration: 30,
+                    watched: false
+                });
+            })
+        }
+    }
+});
+const schema =  new GraphQLSchema({
+    query: queryType
+});
 
 const videoA = {
     id: 1,
@@ -36,20 +69,9 @@ const videoB = {
 };
 const videos = [videoA, videoB];
 
-const resolvers = {
-    video: () => ({
-        id: () => '1',
-        title: () => 'foo',
-        duration: () => 180,
-        watched: () => true
-    }),
-    videos: () => videos
-};
-
 server.use('/graphql', graphqlHTTP({
     schema,
-    graphiql: true,
-    rootValue: resolvers
+    graphiql: true
 }));
 
 server.listen(PORT, () => {
