@@ -5,3 +5,7 @@
 `yarn init`
 
 `yarn add graphql`
+
+`yarn add express express-graphql`
+
+`node index.js`
