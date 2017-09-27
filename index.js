@@ -26,11 +26,11 @@ const videoType = new GraphQLObjectType({
         },
         duration: {
             type: GraphQLInt,
-            decription: 'Duration of the video'
+            description: 'Duration of the video'
         },
         watched: {
             type: GraphQLBoolean,
-            decription: 'If video was viewed'
+            description: 'If video was viewed'
         }
     }
 });
