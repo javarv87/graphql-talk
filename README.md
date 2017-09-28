@@ -8,4 +8,6 @@
 
 `yarn add express express-graphql`
 
+`yarn add graphql-relay`
+
 `node index.js`
