@@ -13,15 +13,17 @@ const {
     GraphQLBoolean
 } = require('graphql');
 const { getVideoById, getVideos, createVideo } = require('./src/data');
+const { nodeInterface } = require('./src/node');
 
 const PORT = process.env.PORT || 3000;
 const server = express();
+
 const videoType = new GraphQLObjectType({
     name: 'Video',
     decription: 'This is new Video',
     fields: {
         id: {
-            type: GraphQLID,
+            type: new GraphQLNonNull(GraphQLID),
             description: 'Id of video'
         },
         title: {
@@ -36,8 +38,11 @@ const videoType = new GraphQLObjectType({
             type: GraphQLBoolean,
             description: 'If video was viewed'
         }
-    }
+    },
+    interfaces: [nodeInterface]
 });
+exports.videoType = videoType;
+
 const queryType =  new GraphQLObjectType({
     name: 'QueryType',
     description: 'The root query type',
